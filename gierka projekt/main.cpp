@@ -6,6 +6,15 @@
 
 using namespace std;
 
+void wycentrujTekst(sf::Text& text, const sf::RectangleShape& rectangle) {
+	sf::FloatRect textBounds = text.getLocalBounds();
+	text.setOrigin(textBounds.width / 2, textBounds.height / 2);
+	text.setPosition(
+		rectangle.getPosition().x + rectangle.getSize().x / 2,
+		rectangle.getPosition().y + rectangle.getSize().y / 2
+	);
+}
+
 class Przycisk {
 public:
 	sf::RectangleShape prostokat;
@@ -16,15 +25,17 @@ public:
 		prostokat.setSize(sf::Vector2f(szerokosc, wysokosc));
 		prostokat.setPosition(x, y);
 		prostokat.setFillColor(sf::Color::Black);
-
+		prostokat.setOutlineThickness(5);
+		prostokat.setOutlineColor(sf::Color::White);
 		tekst.setFont(font);
 		tekst.setString(napis);
 		tekst.setCharacterSize(24);
 		tekst.setFillColor(sf::Color::White);
-		tekst.setPosition(x + (szerokosc - tekst.getGlobalBounds().width) / 2, y + (wysokosc - tekst.getGlobalBounds().height) / 2);
+		
+		wycentrujTekst(tekst, prostokat);
 	}
-	bool sprawdzKlikniecie(const sf::Vector2i& mousePos) {
-		if (prostokat.getGlobalBounds().contains(sf::Vector2f(mousePos))) {
+	bool sprawdzKlikniecie(const sf::Vector2i& mousePos, const sf::Event& event) {
+		if (prostokat.getGlobalBounds().contains(sf::Vector2f(mousePos)) && event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
 			return true;
 		}
 		return false;
@@ -108,41 +119,60 @@ public:
 
 class Wrog : public sf::Sprite {
 public:
-
 	Wrog(sf::Texture& tekstura, float x, float y) {
-		setTexture(tekstura);
-		setPosition(x, y);
-		setScale(0.3f, 0.3f);
+		this->setTexture(tekstura);
+		this->setPosition(x, y);
+		this->setScale(0.3f, 0.3f);
 	}
 	
 
 
 };
 class Poziom {
-public:
+private:
 	vector<Wrog> wrogowie;
+	int numer;
+public:
+	bool zakonczony;
 
-	Poziom(sf::Texture& tekstura,int rows) {
+	Poziom(int numerpoziomu) {
+		numer = numerpoziomu;
+		zakonczony = false;
+	}
+
+	void utworzWrogow(sf::Texture& tekstura) {
+		wrogowie.clear();
+		int rows = 3;
 		int cols = 8;
 		float startx = 100.f;
 		float starty = 50.f;
 		float spacingx = 70.f;
 		float spacingy = 70.f;
-		
-
 
 		for (int i = 0; i < cols; i++) {
-			for (int j = 0; j < rows; j++) {
+			for (int j = 0; j < numer; j++) {
 				float x = startx + i * spacingx;
 				float y = starty + j * spacingy;
-				wrogowie.emplace_back(tekstura, x, y);
+				wrogowie.emplace_back(tekstura,x, y);
 			}
 		}
+		
 	}
-	void drawlvl(sf::RenderWindow& window){
+
+	void drawlvl(sf::RenderWindow& window) {
+
+		
 		for (auto& wrog : wrogowie) {
 			window.draw(wrog);
 		}
+	}
+
+	bool poziomzakonczony() {
+		return wrogowie.empty();
+	}
+
+	vector<Wrog>& zwrocwrog(){
+		return wrogowie;
 	}
 };
 class Pocisk :public sf::Sprite {
@@ -189,14 +219,51 @@ void kolizja(vector<Pocisk>& pociski, vector<Wrog>& wrogowie,int& punkciory) {
 	}
 	
 }
+void EkranPomocy(sf::RenderWindow& window, sf::Font& font) {
+	sf::Text instrukcje;
+	instrukcje.setFont(font);
+	instrukcje.setString("POMOC:\nUnikaj asteroid, aby przetrwac!\n"
+		"Strzelaj do kosmitow za pomoca SPACJI.\n"
+		"Poruszaj rakieta strzalkami w LEWO i PRAWO.\n"
+		"Zniszcz wszystkich kosmitow, aby wygrac!");
+	instrukcje.setCharacterSize(24);
+	instrukcje.setFillColor(sf::Color::White);
+
+	
+	sf::FloatRect textBounds = instrukcje.getLocalBounds();
+	instrukcje.setOrigin(textBounds.width / 2, textBounds.height / 2);
+	instrukcje.setPosition(window.getSize().x / 2, window.getSize().y / 2);
+
+	
+	window.clear(sf::Color::Black);
+	window.draw(instrukcje);
+	window.display();
+
+	
+} 
+
 
 int main()
 {
-	 int punkciory = 0;
+	vector<Poziom> poziomy;
+	int poziomteraz = 0;
+	int stangry = 0;
+	/*stangry = 0 - menu poczatkowe
+	  stangry = 1 - gra sie toczy
+	  stangry = 2 - escape
+	  stangry = 3 - gra sie skonczyla
+	  
+	*/
+	int stangryback = 0;
+
+	int punkciory = 0;
 	string punktytekst;
 	sf::Sprite eksplozja;
 	sf::Text gameover;
 	sf::Font arial;
+	sf::Text koniecnapis;
+	sf::Text tytul;
+	sf::Text pauza;
 	arial.loadFromFile("C:\\Users\\jakub\\source\\repos\\gierka projekt\\arial.ttf");
 	gameover.setFont(arial);
 	gameover.setString("Game Over");
@@ -206,6 +273,22 @@ int main()
 	sf::Text punkty;
 	punkty.setFont(arial);
 	punkty.setFillColor(sf::Color::White);
+	koniecnapis.setFont(arial);
+	koniecnapis.setString("Koniec Gry !");
+	koniecnapis.setCharacterSize(80);
+	koniecnapis.setFillColor(sf::Color::White);
+	koniecnapis.setPosition(120.f, 100.f);
+	tytul.setFont(arial);
+	tytul.setString("Najezdzcy \n\t  z \n kosmosu");
+	tytul.setCharacterSize(50);
+	tytul.setFillColor(sf::Color::White);
+	tytul.setPosition(240.f, 100.f);
+
+	pauza.setFont(arial);
+	pauza.setString("Opuscic \n  Gre?");
+	pauza.setCharacterSize(80);
+	pauza.setFillColor(sf::Color::White);
+	pauza.setPosition(220.f, 100.f);
 
 	vector<Gwiazda> gwiazdy;
 	vector<Asteroida> asteroidy;
@@ -249,19 +332,26 @@ int main()
 	eksplozjastatku.loadFromFile("C:\\Users\\jakub\\source\\repos\\gierka projekt\\eksplozja.png");
 	eksplozja.setTexture(eksplozjastatku);
 	
-	for (int i = 0; i < 5; i++) {
+	for (int i = 0; i < 3; i++) {
 		float x = rand() % 800;
 		float y = rand() % 600;
 		float speed = rand() % 1 + 1;
 		asteroidy.emplace_back(x, y, speed,asteroidatekstura);
 	}
-	Poziom jeden(teksturawrog,1);
-	Poziom dwa(teksturawrog, 2);
-	Poziom trzy(teksturawrog, 3);
+	
+	poziomy.emplace_back(3);
+	poziomy[0].utworzWrogow(teksturawrog);
+	poziomy.emplace_back(4);
+	poziomy[1].utworzWrogow(teksturawrog);
+	poziomy.emplace_back(5);
+	poziomy[2].utworzWrogow(teksturawrog);
 
 	Gracz G1(teksturagracz,50.f,20.f);
-
-	Przycisk p1(200.f, -300.f, 200.f, 100.f, arial, "dupa");
+	 
+	Przycisk graj(260.f, 350.f, 265.f, 100.f, arial, "Rozpocznij \n\tGre");
+	Przycisk koniec(260.f, 300.f, 265.f, 100.f, arial, "Wyjdz");
+	Przycisk escape(260.f, 450.f, 265.f, 100.f, arial, "Wyjdz");
+	Przycisk kontynuuj(260.f, 300.f, 265.f, 100.f, arial, "Kontynuuj");
 
 	sf::Clock clock;
 	
@@ -275,8 +365,11 @@ int main()
 				window.close();
 		}
 		float roznicaczasu = clock.restart().asSeconds();
-
-		if (gracz) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1)) {
+			EkranPomocy(window, arial);
+			continue;
+		}
+		if (gracz && stangry == 1) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
 				G1.ruchprawo();
 			}
@@ -308,44 +401,105 @@ int main()
 
 		
 		
-		kolizja(pociski, trzy.wrogowie,punkciory);
+		
 		punktytekst = to_string(punkciory);
 		punkty.setString(punktytekst);
 
+		
+		
 		window.clear();
-		window.draw(tlogry);
-		window.draw(punkty);
-		
-		for (auto& gwiazda : gwiazdy) {
-			gwiazda.update();
-			window.draw(gwiazda.shape);
+		if (stangry == 0) {
+			for (auto& gwiazda : gwiazdy) {
+				gwiazda.update();
+				window.draw(gwiazda.shape);
+			}
+			graj.rysuj(window);
+			window.draw(tytul);
+			if (graj.sprawdzKlikniecie(sf::Mouse::getPosition(window), event)) {
+				stangry = 1;
+				window.clear();
+				stangryback = 1;
+			}
+			
 		}
+		else if (stangry == 1) {
+			window.draw(tlogry);
+			window.draw(punkty);
 
-		for (auto& asteroida : asteroidy) {
-			asteroida.update();
-			window.draw(asteroida.sprite);
-		}
-		
-		trzy.drawlvl(window);
-		if (gracz) {
-			G1.graczdraw(window);
-		}
-		else {
-			G1.pozycja();
-			eksplozja.setPosition(G1.graczx-60.f,G1.graczy-40.f);
-			window.draw(eksplozja);
-			window.draw(gameover);
-			
-			
-			
-		}
-		for (const auto& pocisk : pociski) {
-			window.draw(pocisk.sprite);
-		}
+			for (auto& gwiazda : gwiazdy) {
+				gwiazda.update();
+				window.draw(gwiazda.shape);
+			}
 
-		p1.rysuj(window);
-		
-		
+			for (auto& asteroida : asteroidy) {
+				asteroida.update();
+				window.draw(asteroida.sprite);
+			}
+			poziomy[poziomteraz].drawlvl(window);
+			kolizja(pociski, poziomy[poziomteraz].zwrocwrog(), punkciory);
+
+			// Jeœli wszyscy wrogowie zostali pokonani na aktualnym poziomie
+			if (poziomy[poziomteraz].zwrocwrog().empty()) {
+				poziomteraz++; // PrzejdŸ do nastêpnego poziomu
+
+				if (poziomteraz < poziomy.size()) {
+					poziomy[poziomteraz].utworzWrogow(teksturawrog); // Twórz wrogów dla nowego poziomu
+				}
+				else {
+					stangry = 3; // Gra zakoñczona, wszystkie poziomy ukoñczone
+				}
+			}
+			
+
+			if (gracz) {
+				G1.graczdraw(window);
+			}
+			else {
+				G1.pozycja();
+				eksplozja.setPosition(G1.graczx - 60.f, G1.graczy - 40.f);
+				window.draw(eksplozja);
+				window.draw(gameover);
+
+
+
+			}
+			for (const auto& pocisk : pociski) {
+				window.draw(pocisk.sprite);
+			}
+
+		}
+		if (stangry == 3) {
+			window.clear();
+			for (auto& gwiazda : gwiazdy) {
+				gwiazda.update();
+				window.draw(gwiazda.shape);
+			}
+			koniec.rysuj(window);
+			window.draw(koniecnapis);
+			if (koniec.sprawdzKlikniecie(sf::Mouse::getPosition(window),event)) {
+				break;
+			}
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)&& stangry==1) {
+			stangry = 2;
+		}
+		if (stangry == 2 && stangryback == 1) {
+			escape.rysuj(window);
+			kontynuuj.rysuj(window);
+			window.draw(pauza);
+			for (auto& gwiazda : gwiazdy) {
+				gwiazda.update();
+				window.draw(gwiazda.shape);
+			}
+			if (escape.sprawdzKlikniecie(sf::Mouse::getPosition(window), event)) {
+				break;
+			}
+			if (kontynuuj.sprawdzKlikniecie(sf::Mouse::getPosition(window), event)) {
+				stangry = 1;
+				continue;
+				
+			}
+		}
 		
 		window.display();
 	}
