@@ -1,25 +1,37 @@
 ﻿  main.cpp
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(65,29): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(84,30): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(235,68): warning C4244: "argument": konwersja z "T" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(64,29): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(83,30): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(260,68): warning C4244: "argument": konwersja z "T" do "float", możliwa utrata danych
           with
           [
               T=unsigned int
           ]
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(235,44): warning C4244: "argument": konwersja z "T" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(260,44): warning C4244: "argument": konwersja z "T" do "float", możliwa utrata danych
           with
           [
               T=unsigned int
           ]
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(303,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(304,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(305,15): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(336,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(337,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(338,15): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(279,64): warning C4244: "argument": konwersja z "T" do "float", możliwa utrata danych
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(279,40): warning C4244: "argument": konwersja z "T" do "float", możliwa utrata danych
+          with
+          [
+              T=unsigned int
+          ]
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(347,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(348,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(349,15): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(381,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(382,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(383,15): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(489,14): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(491,18): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
   Trwa generowanie kodu
-  2 of 501 functions ( 0.4%) were compiled, the rest were copied from previous compilation.
-    1 functions were new in current compilation
+  1 of 530 functions ( 0.2%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   Zakończono generowanie kodu
   gierka projekt.vcxproj -> C:\Users\jakub\source\repos\gierka projekt\x64\Release\gierka projekt.exe

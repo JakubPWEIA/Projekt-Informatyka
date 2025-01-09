@@ -144,6 +144,19 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\arial.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\alien.png">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </Image>
+    <Image Include="..\asteroida.png" />
+    <Image Include="..\eksplozja.png" />
+    <Image Include="..\siatka.png" />
+    <Image Include="..\statek.png" />
+    <Image Include="..\tlo.png" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

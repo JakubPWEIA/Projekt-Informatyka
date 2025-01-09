@@ -3,7 +3,6 @@
 #include <vector>
 #include <random>
 #include <windows.h>
-
 using namespace std;
 
 void wycentrujTekst(sf::Text& text, const sf::RectangleShape& rectangle) {
@@ -66,7 +65,7 @@ public:
 		}
 	}
 };
-class Asteroida{
+class Asteroida:public sf::Sprite{
 public:
 	sf::Sprite sprite;
 	float predkosc;
@@ -219,6 +218,32 @@ void kolizja(vector<Pocisk>& pociski, vector<Wrog>& wrogowie,int& punkciory) {
 	}
 	
 }
+void kolizjaasteroidy(vector<Pocisk>& pociski, vector<Asteroida>& asteroidy,int& punkciory) {
+	for (auto pocisk = pociski.begin(); pocisk != pociski.end();) {
+		bool kolizja = false;
+		for (auto asteroida = asteroidy.begin(); asteroida != asteroidy.end();) {
+			if (pocisk->sprite.getGlobalBounds().intersects(asteroida->sprite.getGlobalBounds())) {
+				
+				asteroida = asteroidy.erase(asteroida);
+				kolizja = true;
+				punkciory += 10;
+
+			}
+			else
+			{
+				++asteroida;
+			}
+		}
+
+		if (kolizja) {
+			pocisk = pociski.erase(pocisk);
+		}
+		else {
+			++pocisk;
+		}
+	}
+
+}
 void EkranPomocy(sf::RenderWindow& window, sf::Font& font) {
 	sf::Text instrukcje;
 	instrukcje.setFont(font);
@@ -240,7 +265,26 @@ void EkranPomocy(sf::RenderWindow& window, sf::Font& font) {
 	window.display();
 
 	
-} 
+}
+void EkranPoziom(sf::RenderWindow& window, sf::Font& font,int poziomteraz) {
+	sf::Text poziom;
+	poziom.setFont(font);
+	poziom.setString("POZIOM "+to_string(poziomteraz+1));
+	poziom.setCharacterSize(24);
+	poziom.setFillColor(sf::Color::White);
+
+
+	sf::FloatRect textBounds = poziom.getLocalBounds();
+	poziom.setOrigin(textBounds.width / 2, textBounds.height / 2);
+	poziom.setPosition(window.getSize().x / 2, window.getSize().y / 2);
+
+
+	window.clear(sf::Color::Black);
+	window.draw(poziom);
+	window.display();
+	sf::sleep(sf::seconds(3));
+	window.clear(sf::Color::Black);
+}
 
 
 int main()
@@ -264,7 +308,7 @@ int main()
 	sf::Text koniecnapis;
 	sf::Text tytul;
 	sf::Text pauza;
-	arial.loadFromFile("C:\\Users\\jakub\\source\\repos\\gierka projekt\\arial.ttf");
+	arial.loadFromFile("zasoby\\arial.ttf");
 	gameover.setFont(arial);
 	gameover.setString("Game Over");
 	gameover.setCharacterSize(80);
@@ -311,27 +355,28 @@ int main()
 	window.setFramerateLimit(60);
 	
 	sf::Texture teksturawrog;
-	teksturawrog.loadFromFile("C:\\Users\\jakub\\source\\repos\\gierka projekt\\alien.png");
+	teksturawrog.loadFromFile("zasoby\\alien.png");
 	
 	sf::Texture teksturagracz;
-	teksturagracz.loadFromFile("C:\\Users\\jakub\\source\\repos\\gierka projekt\\statek.png");
+	teksturagracz.loadFromFile("zasoby\\statek.png");
 	
 	sf::Texture tlo;
-	tlo.loadFromFile("C:\\Users\\jakub\\source\\repos\\gierka projekt\\tlo.png");
+	tlo.loadFromFile("zasoby\\tlo.png");
 	
 	sf::Sprite tlogry;
 	tlogry.setTexture(tlo);
 	
 	sf::Texture asteroidatekstura;
-	asteroidatekstura.loadFromFile("C:\\Users\\jakub\\source\\repos\\gierka projekt\\asteroida.png");
+	asteroidatekstura.loadFromFile("zasoby\\asteroida.png");
 	
 	sf::Texture pocisktekstura;
-	pocisktekstura.loadFromFile("C:\\Users\\jakub\\source\\repos\\gierka projekt\\siatka.png");
+	pocisktekstura.loadFromFile("zasoby\\siatka.png");
 
 	sf::Texture eksplozjastatku;
-	eksplozjastatku.loadFromFile("C:\\Users\\jakub\\source\\repos\\gierka projekt\\eksplozja.png");
+	eksplozjastatku.loadFromFile("zasoby\\eksplozja.png");
 	eksplozja.setTexture(eksplozjastatku);
 	
+
 	for (int i = 0; i < 3; i++) {
 		float x = rand() % 800;
 		float y = rand() % 600;
@@ -416,6 +461,7 @@ int main()
 			graj.rysuj(window);
 			window.draw(tytul);
 			if (graj.sprawdzKlikniecie(sf::Mouse::getPosition(window), event)) {
+				EkranPoziom(window, arial, poziomteraz);
 				stangry = 1;
 				window.clear();
 				stangryback = 1;
@@ -437,18 +483,29 @@ int main()
 			}
 			poziomy[poziomteraz].drawlvl(window);
 			kolizja(pociski, poziomy[poziomteraz].zwrocwrog(), punkciory);
-
+			kolizjaasteroidy(pociski, asteroidy,punkciory);
+			if (asteroidy.empty()) {
+				for (int i = 0; i < 3; i++) {
+					float x = rand() % 800;
+					float y = -50;
+					float speed = rand() % 1 + 1;
+					asteroidy.emplace_back(x, y, speed, asteroidatekstura);
+				}
+			}
+			
 			// Jeœli wszyscy wrogowie zostali pokonani na aktualnym poziomie
 			if (poziomy[poziomteraz].zwrocwrog().empty()) {
 				poziomteraz++; // PrzejdŸ do nastêpnego poziomu
 
 				if (poziomteraz < poziomy.size()) {
+					EkranPoziom(window, arial, poziomteraz);
 					poziomy[poziomteraz].utworzWrogow(teksturawrog); // Twórz wrogów dla nowego poziomu
 				}
 				else {
 					stangry = 3; // Gra zakoñczona, wszystkie poziomy ukoñczone
 				}
 			}
+			
 			
 
 			if (gracz) {

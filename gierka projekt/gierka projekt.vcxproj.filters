@@ -19,4 +19,27 @@
       <Filter>Pliki źródłowe</Filter>
     </ClCompile>
   </ItemGroup>
+  <ItemGroup>
+    <Font Include="..\arial.ttf" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\alien.png">
+      <Filter>Pliki źródłowe</Filter>
+    </Image>
+    <Image Include="..\asteroida.png">
+      <Filter>Pliki źródłowe</Filter>
+    </Image>
+    <Image Include="..\eksplozja.png">
+      <Filter>Pliki źródłowe</Filter>
+    </Image>
+    <Image Include="..\siatka.png">
+      <Filter>Pliki źródłowe</Filter>
+    </Image>
+    <Image Include="..\statek.png">
+      <Filter>Pliki źródłowe</Filter>
+    </Image>
+    <Image Include="..\tlo.png">
+      <Filter>Pliki źródłowe</Filter>
+    </Image>
+  </ItemGroup>
 </Project>
