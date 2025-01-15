@@ -291,12 +291,12 @@ int main()
 {
 	vector<Poziom> poziomy;
 	int poziomteraz = 0;
-	int stangry = 0;
+	int stangry = 4;
 	/*stangry = 0 - menu poczatkowe
 	  stangry = 1 - gra sie toczy
 	  stangry = 2 - escape
 	  stangry = 3 - gra sie skonczyla
-	  
+	  stangry = 4 - nick gracza moze
 	*/
 	int stangryback = 0;
 
@@ -338,7 +338,7 @@ int main()
 	vector<Asteroida> asteroidy;
 
 	vector<Pocisk> pociski;
-	
+
 	bool shoot = true;
 	float cooldown = 0.5f;
 	sf::Clock shootTimer;
@@ -349,41 +349,41 @@ int main()
 		float speed = rand() % 2 + 1;
 		gwiazdy.emplace_back(x, y, speed);
 	}
-	
+
 
 	sf::RenderWindow window(sf::VideoMode(800, 600), "Najeüdczcy z kosmosu !");
 	window.setFramerateLimit(60);
-	
+
 	sf::Texture teksturawrog;
 	teksturawrog.loadFromFile("zasoby\\alien.png");
-	
+
 	sf::Texture teksturagracz;
 	teksturagracz.loadFromFile("zasoby\\statek.png");
-	
+
 	sf::Texture tlo;
 	tlo.loadFromFile("zasoby\\tlo.png");
-	
+
 	sf::Sprite tlogry;
 	tlogry.setTexture(tlo);
-	
+
 	sf::Texture asteroidatekstura;
 	asteroidatekstura.loadFromFile("zasoby\\asteroida.png");
-	
+
 	sf::Texture pocisktekstura;
 	pocisktekstura.loadFromFile("zasoby\\siatka.png");
 
 	sf::Texture eksplozjastatku;
 	eksplozjastatku.loadFromFile("zasoby\\eksplozja.png");
 	eksplozja.setTexture(eksplozjastatku);
-	
+
 
 	for (int i = 0; i < 3; i++) {
 		float x = rand() % 800;
 		float y = rand() % 600;
 		float speed = rand() % 1 + 1;
-		asteroidy.emplace_back(x, y, speed,asteroidatekstura);
+		asteroidy.emplace_back(x, y, speed, asteroidatekstura);
 	}
-	
+
 	poziomy.emplace_back(3);
 	poziomy[0].utworzWrogow(teksturawrog);
 	poziomy.emplace_back(4);
@@ -391,18 +391,34 @@ int main()
 	poziomy.emplace_back(5);
 	poziomy[2].utworzWrogow(teksturawrog);
 
-	Gracz G1(teksturagracz,50.f,20.f);
-	 
+	Gracz G1(teksturagracz, 50.f, 20.f);
+
 	Przycisk graj(260.f, 350.f, 265.f, 100.f, arial, "Rozpocznij \n\tGre");
 	Przycisk koniec(260.f, 300.f, 265.f, 100.f, arial, "Wyjdz");
 	Przycisk escape(260.f, 450.f, 265.f, 100.f, arial, "Wyjdz");
 	Przycisk kontynuuj(260.f, 300.f, 265.f, 100.f, arial, "Kontynuuj");
 
 	sf::Clock clock;
-	
+
 	bool gracz = true;
 
+	string nick;
+	sf::Text tekst;
+	tekst.setFont(arial);
+	tekst.setCharacterSize(24);
+	tekst.setPosition(270.f, 100.f);
+	bool wcisnietyklawisz = false;
+	sf::Text podajnick;
+	podajnick.setFont(arial);
+	podajnick.setCharacterSize(30);
+	podajnick.setString("Podaj nick:");
+	podajnick.setPosition(270.f, 20.f);
 
+	sf::Text enter;
+	enter.setFont(arial);
+	enter.setCharacterSize(30);
+	enter.setString("Wcisnij ENTER aby rozpoczac");
+	enter.setPosition(140.f, 200.f);
 	while (window.isOpen()) {
 		sf::Event event;
 		while (window.pollEvent(event)) {
@@ -413,6 +429,78 @@ int main()
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1)) {
 			EkranPomocy(window, arial);
 			continue;
+		}
+		window.clear();
+		if (stangry == 0) {
+			for (auto& gwiazda : gwiazdy) {
+				gwiazda.update();
+				window.draw(gwiazda.shape);
+			}
+			graj.rysuj(window);
+			window.draw(tytul);
+			if (graj.sprawdzKlikniecie(sf::Mouse::getPosition(window), event)) {
+				EkranPoziom(window, arial, poziomteraz);
+				stangry = 1;
+				window.clear();
+				stangryback = 1;
+			}
+
+		}
+		punktytekst = to_string(punkciory);
+		punkty.setString(punktytekst);
+		if (stangry == 1) {
+			window.draw(tlogry);
+			window.draw(punkty);
+
+			for (auto& gwiazda : gwiazdy) {
+				gwiazda.update();
+				window.draw(gwiazda.shape);
+			}
+
+			for (auto& asteroida : asteroidy) {
+				asteroida.update();
+				window.draw(asteroida.sprite);
+			}
+			poziomy[poziomteraz].drawlvl(window);
+			kolizja(pociski, poziomy[poziomteraz].zwrocwrog(), punkciory);
+			kolizjaasteroidy(pociski, asteroidy, punkciory);
+			if (asteroidy.empty()) {
+				for (int i = 0; i < 3; i++) {
+					float x = rand() % 800;
+					float y = -50;
+					float speed = rand() % 1 + 1;
+					asteroidy.emplace_back(x, y, speed, asteroidatekstura);
+				}
+			}
+
+			// Jeúli wszyscy wrogowie zostali pokonani na aktualnym poziomie
+			if (poziomy[poziomteraz].zwrocwrog().empty()) {
+				poziomteraz++; // Przejdü do nastÍpnego poziomu
+
+				if (poziomteraz < poziomy.size()) {
+					EkranPoziom(window, arial, poziomteraz);
+					poziomy[poziomteraz].utworzWrogow(teksturawrog); // TwÛrz wrogÛw dla nowego poziomu
+				}
+				else {
+					stangry = 3; // Gra zakoÒczona, wszystkie poziomy ukoÒczone
+				}
+			}
+			if (gracz) {
+				G1.graczdraw(window);
+			}
+			else {
+				G1.pozycja();
+				eksplozja.setPosition(G1.graczx - 60.f, G1.graczy - 40.f);
+				window.draw(eksplozja);
+				window.draw(gameover);
+
+
+
+			}
+			for (const auto& pocisk : pociski) {
+				window.draw(pocisk.sprite);
+			}
+
 		}
 		if (gracz && stangry == 1) {
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
@@ -440,90 +528,8 @@ int main()
 		for (auto& asteroida : asteroidy) {
 			if (asteroida.sprite.getGlobalBounds().intersects(G1.sprite.getGlobalBounds())) {
 				gracz = false;
-				
-			}
-		}
-
-		
-		
-		
-		punktytekst = to_string(punkciory);
-		punkty.setString(punktytekst);
-
-		
-		
-		window.clear();
-		if (stangry == 0) {
-			for (auto& gwiazda : gwiazdy) {
-				gwiazda.update();
-				window.draw(gwiazda.shape);
-			}
-			graj.rysuj(window);
-			window.draw(tytul);
-			if (graj.sprawdzKlikniecie(sf::Mouse::getPosition(window), event)) {
-				EkranPoziom(window, arial, poziomteraz);
-				stangry = 1;
-				window.clear();
-				stangryback = 1;
-			}
-			
-		}
-		else if (stangry == 1) {
-			window.draw(tlogry);
-			window.draw(punkty);
-
-			for (auto& gwiazda : gwiazdy) {
-				gwiazda.update();
-				window.draw(gwiazda.shape);
-			}
-
-			for (auto& asteroida : asteroidy) {
-				asteroida.update();
-				window.draw(asteroida.sprite);
-			}
-			poziomy[poziomteraz].drawlvl(window);
-			kolizja(pociski, poziomy[poziomteraz].zwrocwrog(), punkciory);
-			kolizjaasteroidy(pociski, asteroidy,punkciory);
-			if (asteroidy.empty()) {
-				for (int i = 0; i < 3; i++) {
-					float x = rand() % 800;
-					float y = -50;
-					float speed = rand() % 1 + 1;
-					asteroidy.emplace_back(x, y, speed, asteroidatekstura);
-				}
-			}
-			
-			// Jeúli wszyscy wrogowie zostali pokonani na aktualnym poziomie
-			if (poziomy[poziomteraz].zwrocwrog().empty()) {
-				poziomteraz++; // Przejdü do nastÍpnego poziomu
-
-				if (poziomteraz < poziomy.size()) {
-					EkranPoziom(window, arial, poziomteraz);
-					poziomy[poziomteraz].utworzWrogow(teksturawrog); // TwÛrz wrogÛw dla nowego poziomu
-				}
-				else {
-					stangry = 3; // Gra zakoÒczona, wszystkie poziomy ukoÒczone
-				}
-			}
-			
-			
-
-			if (gracz) {
-				G1.graczdraw(window);
-			}
-			else {
-				G1.pozycja();
-				eksplozja.setPosition(G1.graczx - 60.f, G1.graczy - 40.f);
-				window.draw(eksplozja);
-				window.draw(gameover);
-
-
 
 			}
-			for (const auto& pocisk : pociski) {
-				window.draw(pocisk.sprite);
-			}
-
 		}
 		if (stangry == 3) {
 			window.clear();
@@ -533,11 +539,11 @@ int main()
 			}
 			koniec.rysuj(window);
 			window.draw(koniecnapis);
-			if (koniec.sprawdzKlikniecie(sf::Mouse::getPosition(window),event)) {
+			if (koniec.sprawdzKlikniecie(sf::Mouse::getPosition(window), event)) {
 				break;
 			}
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape)&& stangry==1) {
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) && stangry == 1) {
 			stangry = 2;
 		}
 		if (stangry == 2 && stangryback == 1) {
@@ -554,14 +560,37 @@ int main()
 			if (kontynuuj.sprawdzKlikniecie(sf::Mouse::getPosition(window), event)) {
 				stangry = 1;
 				continue;
-				
+
 			}
 		}
-		
+
+		if (stangry == 4) {
+			window.draw(podajnick);
+				if (event.type == sf::Event::TextEntered) {
+					if (event.text.unicode >= 32 && event.text.unicode < 128 && wcisnietyklawisz == false) {
+						nick += event.text.unicode;
+						wcisnietyklawisz = true;
+						sf::sleep(sf::milliseconds(150));
+						wcisnietyklawisz = false;
+					}
+					else if (event.text.unicode == 8 && !nick.empty()) {
+						nick.pop_back();
+						wcisnietyklawisz = true;
+						sf::sleep(sf::milliseconds(150));
+						wcisnietyklawisz = false;
+					}
+				}
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+					stangry = 1;
+				}
+			tekst.setString(nick);
+			window.clear();
+			window.draw(podajnick);
+			window.draw(tekst);
+			window.draw(enter);
+
+		}
 		window.display();
 	}
-
-		
-
 	return 0;
 }
