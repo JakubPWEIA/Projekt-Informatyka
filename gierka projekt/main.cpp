@@ -3,6 +3,7 @@
 #include <vector>
 #include <random>
 #include <windows.h>
+#include <fstream>
 using namespace std;
 
 void wycentrujTekst(sf::Text& text, const sf::RectangleShape& rectangle) {
@@ -20,10 +21,10 @@ public:
 	sf::Text tekst;
 	bool klikniety = false;
 
-	Przycisk(float x, float y, float szerokosc, float wysokosc, sf::Font& font, const string& napis) {
+	Przycisk(float x, float y, float szerokosc, float wysokosc, sf::Font& font, const string& napis, sf::Color kolor) {
 		prostokat.setSize(sf::Vector2f(szerokosc, wysokosc));
 		prostokat.setPosition(x, y);
-		prostokat.setFillColor(sf::Color::Black);
+		prostokat.setFillColor(kolor);
 		prostokat.setOutlineThickness(5);
 		prostokat.setOutlineColor(sf::Color::White);
 		tekst.setFont(font);
@@ -291,12 +292,13 @@ int main()
 {
 	vector<Poziom> poziomy;
 	int poziomteraz = 0;
-	int stangry = 4;
+	int stangry = 3;
 	/*stangry = 0 - menu poczatkowe
 	  stangry = 1 - gra sie toczy
 	  stangry = 2 - escape
 	  stangry = 3 - gra sie skonczyla
-	  stangry = 4 - nick gracza moze
+	  stangry = 4 - nick gracza moze - udalo sie 8)
+	  stangry = 5 - jednak highscores 
 	*/
 	int stangryback = 0;
 
@@ -322,6 +324,13 @@ int main()
 	koniecnapis.setCharacterSize(80);
 	koniecnapis.setFillColor(sf::Color::White);
 	koniecnapis.setPosition(120.f, 100.f);
+	sf::Text przegrales;
+	przegrales.setFont(arial);
+	przegrales.setString("Przegrales !");
+	przegrales.setCharacterSize(80);
+	przegrales.setFillColor(sf::Color::White);
+	przegrales.setPosition(120.f, 100.f);
+
 	tytul.setFont(arial);
 	tytul.setString("Najezdzcy \n\t  z \n kosmosu");
 	tytul.setCharacterSize(50);
@@ -377,6 +386,7 @@ int main()
 	eksplozja.setTexture(eksplozjastatku);
 
 
+
 	for (int i = 0; i < 3; i++) {
 		float x = rand() % 800;
 		float y = rand() % 600;
@@ -393,11 +403,12 @@ int main()
 
 	Gracz G1(teksturagracz, 50.f, 20.f);
 
-	Przycisk graj(260.f, 350.f, 265.f, 100.f, arial, "Rozpocznij \n\tGre");
-	Przycisk koniec(260.f, 300.f, 265.f, 100.f, arial, "Wyjdz");
-	Przycisk escape(260.f, 450.f, 265.f, 100.f, arial, "Wyjdz");
-	Przycisk kontynuuj(260.f, 300.f, 265.f, 100.f, arial, "Kontynuuj");
-
+	Przycisk graj(260.f, 350.f, 265.f, 100.f, arial, "Rozpocznij \n\tGre",sf::Color::Black);
+	Przycisk koniec(260.f, 450.f, 265.f, 100.f, arial, "Wyjdz",sf::Color::Black);
+	Przycisk escape(260.f, 450.f, 265.f, 100.f, arial, "Wyjdz",sf::Color::Black);
+	Przycisk kontynuuj(260.f, 300.f, 265.f, 100.f, arial, "Kontynuuj",sf::Color::Black);
+	Przycisk x(750.f, 9.f, 40.f, 40.f, arial, "X",sf::Color::Red);
+	Przycisk highscores(260.f, 300.f, 265.f, 100.f, arial, "High Scores", sf::Color::Black);
 	sf::Clock clock;
 
 	bool gracz = true;
@@ -419,12 +430,36 @@ int main()
 	enter.setCharacterSize(30);
 	enter.setString("Wcisnij ENTER aby rozpoczac");
 	enter.setPosition(140.f, 200.f);
+
+	//PLIK
+	ofstream wyniki;
+	wyniki.open("wyniki.txt",ios::app);
+	string linijka;
+	vector <string> wektorwyniki;
+	ifstream wynikiodczyt("wyniki.txt");
+	while (getline(wynikiodczyt, linijka)) {
+		wektorwyniki.push_back(linijka);
+	}
+	vector<sf::Text> texts;
+
+	for (int i = 0; i < wektorwyniki.size();i++) {
+		sf::Text wynikitekst;
+		wynikitekst.setFont(arial);
+		wynikitekst.setString(to_string(i + 1) + "." + wektorwyniki[i]);
+		wynikitekst.setCharacterSize(20);
+		wynikitekst.setFillColor(sf::Color::White);
+		wynikitekst.setPosition(10.f, 30.f * i + 10.f);
+		texts.push_back(wynikitekst);
+	}
 	while (window.isOpen()) {
 		sf::Event event;
 		while (window.pollEvent(event)) {
 			if (event.type == sf::Event::Closed)
 				window.close();
 		}
+
+		
+
 		float roznicaczasu = clock.restart().asSeconds();
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1)) {
 			EkranPomocy(window, arial);
@@ -451,7 +486,7 @@ int main()
 		if (stangry == 1) {
 			window.draw(tlogry);
 			window.draw(punkty);
-
+			
 			for (auto& gwiazda : gwiazdy) {
 				gwiazda.update();
 				window.draw(gwiazda.shape);
@@ -494,9 +529,26 @@ int main()
 				window.draw(eksplozja);
 				window.draw(gameover);
 
+				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
+					stangry = 6;
+					wyniki << nick <<" "<< punkciory <<endl;
+					wyniki.close();
+					window.clear();
+					for (auto& gwiazda : gwiazdy) {
+						gwiazda.update();
+						window.draw(gwiazda.shape);
+					}
+					koniec.rysuj(window);
+					window.draw(przegrales);
+					if (koniec.sprawdzKlikniecie(sf::Mouse::getPosition(window), event)) {
+						break;
+					}
+				}
+				
 
 
 			}
+
 			for (const auto& pocisk : pociski) {
 				window.draw(pocisk.sprite);
 			}
@@ -525,22 +577,29 @@ int main()
 				pocisk.updatepocisk();
 			}
 		}
-		for (auto& asteroida : asteroidy) {
-			if (asteroida.sprite.getGlobalBounds().intersects(G1.sprite.getGlobalBounds())) {
-				gracz = false;
-
+			for (auto& asteroida : asteroidy) {
+				if (asteroida.sprite.getGlobalBounds().intersects(G1.sprite.getGlobalBounds())) {
+					gracz = false;
+				
+				}
 			}
-		}
 		if (stangry == 3) {
 			window.clear();
 			for (auto& gwiazda : gwiazdy) {
 				gwiazda.update();
 				window.draw(gwiazda.shape);
 			}
+			highscores.rysuj(window);
 			koniec.rysuj(window);
 			window.draw(koniecnapis);
 			if (koniec.sprawdzKlikniecie(sf::Mouse::getPosition(window), event)) {
 				break;
+			}
+			if (highscores.sprawdzKlikniecie(sf::Mouse::getPosition(window), event)) {
+				stangry = 7;
+				window.clear();
+				
+				
 			}
 		}
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape) && stangry == 1) {
@@ -581,7 +640,7 @@ int main()
 					}
 				}
 				if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter)) {
-					stangry = 1;
+					stangry = 0;
 				}
 			tekst.setString(nick);
 			window.clear();
@@ -589,6 +648,18 @@ int main()
 			window.draw(tekst);
 			window.draw(enter);
 
+		}
+		if (stangry == 7) {
+			window.clear();
+			for (const auto& text : texts) {
+				window.draw(text);
+			}
+
+			window.display();
+		}
+		x.rysuj(window);
+		if (x.sprawdzKlikniecie(sf::Mouse::getPosition(window), event)) {
+			break;
 		}
 		window.display();
 	}
