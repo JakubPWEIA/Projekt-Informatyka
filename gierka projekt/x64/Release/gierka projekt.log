@@ -2,29 +2,29 @@
 C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(67,29): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
 C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(86,30): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
 C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(116,37): warning C4244: "argument": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(309,64): warning C4244: "argument": konwersja z "T" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(358,64): warning C4244: "argument": konwersja z "T" do "float", możliwa utrata danych
           with
           [
               T=unsigned int
           ]
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(309,40): warning C4244: "argument": konwersja z "T" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(358,40): warning C4244: "argument": konwersja z "T" do "float", możliwa utrata danych
           with
           [
               T=unsigned int
           ]
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(401,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(402,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(403,15): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(436,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(437,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(438,15): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(443,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(444,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(445,15): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(591,14): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
-C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(593,18): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(450,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(451,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(452,15): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(485,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(486,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(487,15): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(492,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(493,11): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(494,15): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(640,14): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(642,18): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
   Trwa generowanie kodu
-  1 of 972 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
+  3 of 973 functions ( 0.3%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
     0 functions had inline decision re-evaluated but remain unchanged
   Zakończono generowanie kodu

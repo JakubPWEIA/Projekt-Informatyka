@@ -134,33 +134,61 @@ public:
 		graczy = sprite.getPosition().y;
 
 	}
+	bool kolizja() {
+		return (this->getPosition().x <= 0 || this->getPosition().x >= 600);
+	}
 	void graczdraw(sf::RenderWindow& window) {//Rysowanie gracza
 		window.draw(sprite);
 	}
 	void ruchprawo() {//Funkcja do ruchu w prawo 
-		sprite.move(5.f,0.f);
+		if (sprite.getPosition().x < 700+sprite.getGlobalBounds().width) {
+			sprite.move(5.f, 0.f);
+		}
 	}
 	void ruchlewo() {//Funkcja do ruchu w lewo
-		sprite.move(-5.f, 0.f);
+		if (sprite.getPosition().x > 0+sprite.getGlobalBounds().width) {
+			sprite.move(-5.f, 0.f);
+		}
 	}
 	void pozycja() {//Funkcja potrzebna zeby dobrze ustawic teksture eksplozji w miejscu w ktorym przegral gracz
 		graczx = sprite.getPosition().x;
 		graczy = sprite.getPosition().y;
 	}
+	
 };
 
 class Wrog : public sf::Sprite {
 public:
 	sf::Sprite sprite;
+	float predkosc = 2.0f;
+	static bool kierunek;
 	Wrog(sf::Texture& tekstura, float x, float y) {
 		this->setTexture(tekstura);
 		this->setPosition(x, y);
 		this->setScale(0.3f, 0.3f);
 	}
 	
+	bool ruch() {
+		if (kierunek) {
+			this->move(predkosc, 0);
+		}
+		else {
+			this->move(-predkosc, 0);
+		}
 
+		if (this->getPosition().x <= 0 || this->getPosition().x <= 800) {
+			return true;
+		}
+		return false;
+	}
+	bool kolizja() {
+		return (this->getPosition().x <= 0 || this->getPosition().x >= 750);
+	}
 
 };
+
+bool Wrog::kierunek = true;
+
 class Poziom {
 private:
 	vector<Wrog> wrogowie;
@@ -206,6 +234,27 @@ public:
 
 	vector<Wrog>& zwrocwrog(){//Metoda zwracajaca wektor wrogow potrzebna do kolizji i do automatycznego przelaczania poziomow
 		return wrogowie;
+	}
+
+	void update() {
+		bool zmiana = false;
+		for (auto& wrog : wrogowie) {
+			if (wrog.kolizja()) {
+				zmiana = true;
+				break;
+			}
+		}
+		if (zmiana) {
+			Wrog::kierunek = !Wrog::kierunek;
+		}
+		for (auto& wrog : wrogowie) {
+			if (Wrog::kierunek) {
+				wrog.move(wrog.predkosc, 0);
+			}
+			else {
+				wrog.move(-wrog.predkosc, 0);
+			}
+		}
 	}
 };
 class Pocisk :public sf::Sprite {
@@ -323,7 +372,7 @@ int main()
 	
 
 	int poziomteraz = 0;//Zmienna decydujaca ktory poziom jest teraz (pozycja w wektorze od 0 do 2)
-	int stangry = 4;//Zmienna manipulujaca stanem gry
+	int stangry = 0;//Zmienna manipulujaca stanem gry
 	/*stangry = 0 - menu poczatkowe
 	  stangry = 1 - gra sie toczy
 	  stangry = 2 - escape
@@ -594,8 +643,9 @@ int main()
 					asteroidy.emplace_back(x, y, speed, asteroidatekstura);
 				}
 			}
+			
 			poziomy[poziomteraz].drawlvl(window);//Rysowanie poziomu
-
+			poziomy[poziomteraz].update();
 			
 			if (poziomy[poziomteraz].zwrocwrog().empty()) {// Jeœli wszyscy wrogowie zostali pokonani na aktualnym poziomie
 				poziomteraz++; // PrzejdŸ do nastêpnego poziomu
@@ -639,7 +689,7 @@ int main()
 				G1.ruchprawo();
 			}
 
-			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left) ) {
 				G1.ruchlewo();
 			}
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space) && shoot) {//Tutaj warunek ktory dodaje pocisk do wektora i przypisuje mu pozycje na podstawie pozycji gracza
