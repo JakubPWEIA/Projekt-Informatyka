@@ -6,3 +6,5 @@ czyteraadziala 22
 megatest 286
 Testfinalny 326
 LYSY 296
+test 112
+tes2 240

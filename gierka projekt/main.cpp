@@ -372,7 +372,7 @@ int main()
 	
 
 	int poziomteraz = 0;//Zmienna decydujaca ktory poziom jest teraz (pozycja w wektorze od 0 do 2)
-	int stangry = 0;//Zmienna manipulujaca stanem gry
+	int stangry = 4;//Zmienna manipulujaca stanem gry
 	/*stangry = 0 - menu poczatkowe
 	  stangry = 1 - gra sie toczy
 	  stangry = 2 - escape
