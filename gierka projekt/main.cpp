@@ -643,7 +643,14 @@ int main()
 					asteroidy.emplace_back(x, y, speed, asteroidatekstura);
 				}
 			}
-			
+			if (gwiazdyconvex.empty()) {
+				for (int i = 0; i < 3; i++) {
+					float x = rand() % 800;
+					float y = rand() % -50;
+					float speed = rand() % 1 + 1;
+					gwiazdyconvex.emplace_back(x, y, speed);
+				}
+			}
 			poziomy[poziomteraz].drawlvl(window);//Rysowanie poziomu
 			poziomy[poziomteraz].update();
 			

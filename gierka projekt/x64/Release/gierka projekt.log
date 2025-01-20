@@ -23,9 +23,12 @@ C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(493,11): warn
 C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(494,15): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
 C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(640,14): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
 C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(642,18): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(648,14): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(649,14): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
+C:\Users\jakub\source\repos\gierka projekt\gierka projekt\main.cpp(650,18): warning C4244: "inicjowanie": konwersja z "int" do "float", możliwa utrata danych
   Trwa generowanie kodu
-  1 of 973 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
+  1 of 974 functions ( 0.1%) were compiled, the rest were copied from previous compilation.
     0 functions were new in current compilation
-    44 functions had inline decision re-evaluated but remain unchanged
+    0 functions had inline decision re-evaluated but remain unchanged
   Zakończono generowanie kodu
   gierka projekt.vcxproj -> C:\Users\jakub\source\repos\gierka projekt\x64\Release\gierka projekt.exe
